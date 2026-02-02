@@ -1,5 +1,7 @@
 // API Configuration
-const API_URL = 'http://localhost:3001/api';
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3001/api'
+  : 'https://restaurant-autopilot-pro-production.up.railway.app/api'; // Change this to your Railway URL
 let authToken = localStorage.getItem('authToken');
 
 // Check authentication on load
