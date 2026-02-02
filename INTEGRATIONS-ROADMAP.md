@@ -68,18 +68,21 @@
 
 ---
 
-### 4. **HEAPSGO** (HeapsGO?) 🤔
-**Type:** Unknown - research needed  
-**Priority:** ⚠️ MEDIUM (pending research)  
+### 4. **HEAPS** 📱 - Current POS (Replace!)
+**Type:** POS/Ordering system (currently in use)  
+**Status:** ⚠️ Kim wants to replace ("should have built own")  
+**Priority:** 🔥 HIGH (replacement opportunity!)  
 **Action:**
-- [ ] Research what HeapsGO is
-- [ ] Check if API available
-- [ ] Determine use case
+- [✅] Research completed: online POS system
+- [ ] Document pain points
+- [ ] Build RestOS POS as replacement
 
-**Potential:**
-- Loyalty program?
-- CRM?
-- Marketing automation?
+**Opportunity:**
+- Replace Heaps with RestOS POS module
+- Own the stack (no vendor fees)
+- Market as "Heaps alternative"
+
+**See:** POS-STRATEGY.md for full replacement plan
 
 ---
 
@@ -194,9 +197,10 @@
 
 ---
 
-### 10. **NANOPOS / UNIPOS** 🏪 - POS System
+### 10. **NANOPOS (UniTouch)** 🏪 - POS System
 **Type:** Point of Sale system  
-**API:** Research needed (NanoPOS/UniPOS)  
+**Website:** nanopos.no (UniTouch platform)  
+**API:** ✅ WE HAVE ACCESS!  
 **Priority:** 🔥 CRITICAL (like Edda's Zettle!)  
 **Use Cases:**
 - Real-time sales data
@@ -206,7 +210,7 @@
 - Payment reconciliation
 
 **Integration Plan:**
-- [ ] Research NanoPOS/UniPOS API
+- [✅] API access confirmed
 - [ ] OAuth authentication
 - [ ] Real-time sales webhook
 - [ ] Menu synchronization
@@ -215,6 +219,8 @@
 **Value:** "Live revenue tracking, no manual entry"
 
 **Edda Equivalent:** Zettle integration (RestOS-New has this)
+
+**Timeline:** 1 week (Phase 1 priority!)
 
 ---
 
@@ -238,22 +244,25 @@
 ### 🔥 PHASE 1 - CRITICAL (Week 1-2)
 **Must-have for launch:**
 
-1. **Facebook + Instagram** (Reviews + Social)
+1. **NanoPOS (UniTouch)** ✅ API access confirmed!
+   - Real-time sales data
+   - Live revenue dashboard
+   - Like Edda's Zettle integration
+   - 📅 Timeline: 1 week (priority!)
+
+2. **Facebook + Instagram** (Reviews + Social)
    - Our unique differentiation vs. Edda
    - AI response generation
    - 📅 Timeline: 3 days
-
-2. **NanoPOS/UniPOS** (Real-time sales)
-   - Live revenue dashboard
-   - Like Edda's Zettle integration
-   - 📅 Timeline: 4 days
 
 3. **Tripletex** (Accounting)
    - Norwegian market critical
    - Live P&L feature (Edda has this!)
    - 📅 Timeline: 3 days
 
-**Total: 10 days** (2 weeks with testing)
+**Total: 2 weeks** (with testing)
+
+**Note:** NanoPOS first because we have API access!
 
 ---
 
