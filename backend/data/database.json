@@ -1,0 +1,359 @@
+{
+  "business": {
+    "id": "demo-restaurant-1",
+    "name": "Bella Napoli Ristorante",
+    "address": "Storgata 24, 0184 Oslo, Norway",
+    "phone": "+47 22 12 34 56",
+    "email": "info@bellanapoli.no",
+    "website": "https://bellanapoli.no",
+    "rating": 4.6,
+    "reviewCount": 247,
+    "category": "Italian Restaurant",
+    "description": "Authentic Italian cuisine in the heart of Oslo. Family-owned since 1995.",
+    "cuisine": [
+      "Italian",
+      "Pizza",
+      "Pasta",
+      "Mediterranean"
+    ],
+    "priceLevel": "$$",
+    "hours": {
+      "monday": "11:00-22:00",
+      "tuesday": "11:00-22:00",
+      "wednesday": "11:00-22:00",
+      "thursday": "11:00-22:00",
+      "friday": "11:00-23:00",
+      "saturday": "12:00-23:00",
+      "sunday": "12:00-21:00"
+    },
+    "images": [
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800",
+      "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800",
+      "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=800"
+    ],
+    "googlePlaceId": "ChIJDemo123456",
+    "metaPageId": "demo-meta-page-id",
+    "googleConnected": true,
+    "metaConnected": true,
+    "lastSync": "2026-02-02T00:30:00.000Z"
+  },
+  "reviews": [
+    {
+      "id": "rev-1",
+      "platform": "google",
+      "platformReviewId": "google-rev-001",
+      "author": "Sarah Johnson",
+      "authorAvatar": "SJ",
+      "rating": 5,
+      "text": "Absolutely amazing! The carbonara was perfection. Service was impeccable and the atmosphere was cozy and romantic. Will definitely come back!",
+      "date": "2026-01-31T18:30:00.000Z",
+      "responded": true,
+      "response": "Thank you so much for your kind words, Sarah! We're thrilled you enjoyed the carbonara. Looking forward to welcoming you back soon! 🍝",
+      "responseDate": "2026-02-01T10:15:00.000Z",
+      "responseBy": "owner",
+      "sentiment": "positive",
+      "sentimentScore": 0.95,
+      "keywords": [
+        "carbonara",
+        "service",
+        "atmosphere",
+        "romantic"
+      ],
+      "helpful": 12
+    },
+    {
+      "id": "rev-2",
+      "platform": "google",
+      "platformReviewId": "google-rev-002",
+      "author": "Mark Peterson",
+      "authorAvatar": "MP",
+      "rating": 4,
+      "text": "Great food and nice ambiance. The pizza was delicious but service was a bit slow. Overall good experience though!",
+      "date": "2026-01-30T19:45:00.000Z",
+      "responded": false,
+      "sentiment": "positive",
+      "sentimentScore": 0.75,
+      "keywords": [
+        "food",
+        "pizza",
+        "ambiance",
+        "service",
+        "slow"
+      ],
+      "helpful": 8
+    },
+    {
+      "id": "rev-3",
+      "platform": "meta",
+      "platformReviewId": "fb-rev-001",
+      "author": "Emma Brown",
+      "authorAvatar": "EB",
+      "rating": 5,
+      "text": "Best Italian restaurant in Oslo! The tiramisu is to die for. Highly recommend!",
+      "date": "2026-01-28T20:15:00.000Z",
+      "responded": true,
+      "response": "Grazie mille, Emma! We're so happy you loved our tiramisu. See you soon! ❤️",
+      "responseDate": "2026-01-29T09:30:00.000Z",
+      "responseBy": "owner",
+      "sentiment": "positive",
+      "sentimentScore": 0.98,
+      "keywords": [
+        "best",
+        "tiramisu",
+        "recommend"
+      ],
+      "helpful": 15
+    },
+    {
+      "id": "rev-4",
+      "platform": "google",
+      "platformReviewId": "google-rev-003",
+      "author": "John Smith",
+      "authorAvatar": "JS",
+      "rating": 3,
+      "text": "Food was okay, nothing special. Expected more based on the reviews. Price was a bit high for what we got.",
+      "date": "2026-01-26T17:20:00.000Z",
+      "responded": false,
+      "sentiment": "neutral",
+      "sentimentScore": 0.45,
+      "keywords": [
+        "okay",
+        "expected more",
+        "price",
+        "high"
+      ],
+      "helpful": 5
+    },
+    {
+      "id": "rev-5",
+      "platform": "google",
+      "platformReviewId": "google-rev-004",
+      "author": "Lisa Anderson",
+      "authorAvatar": "LA",
+      "rating": 5,
+      "text": "Fantastic experience from start to finish! The staff was so friendly and the lasagna was incredible. Perfect for date night!",
+      "date": "2026-01-23T21:00:00.000Z",
+      "responded": true,
+      "response": "Thank you, Lisa! We're delighted you had a perfect date night with us. Hope to see you again soon! 💕",
+      "responseDate": "2026-01-24T10:00:00.000Z",
+      "responseBy": "owner",
+      "sentiment": "positive",
+      "sentimentScore": 0.96,
+      "keywords": [
+        "fantastic",
+        "staff",
+        "friendly",
+        "lasagna",
+        "date night"
+      ],
+      "helpful": 10
+    },
+    {
+      "id": "rev-6",
+      "platform": "meta",
+      "platformReviewId": "fb-rev-002",
+      "author": "David Martinez",
+      "authorAvatar": "DM",
+      "rating": 5,
+      "text": "The best margherita pizza I've ever had! Fresh ingredients, perfect crust. This place is a gem!",
+      "date": "2026-01-22T19:30:00.000Z",
+      "responded": false,
+      "sentiment": "positive",
+      "sentimentScore": 0.92,
+      "keywords": [
+        "best",
+        "pizza",
+        "margherita",
+        "fresh",
+        "gem"
+      ],
+      "helpful": 7
+    },
+    {
+      "id": "rev-7",
+      "platform": "google",
+      "platformReviewId": "google-rev-005",
+      "author": "Anna Kowalski",
+      "authorAvatar": "AK",
+      "rating": 4,
+      "text": "Very good Italian food. The pasta was homemade and delicious. A bit pricey but worth it for the quality.",
+      "date": "2026-01-20T18:00:00.000Z",
+      "responded": true,
+      "response": "Thank you for your review, Anna! We're proud of our homemade pasta. Looking forward to your next visit! 🍝",
+      "responseDate": "2026-01-21T11:00:00.000Z",
+      "responseBy": "owner",
+      "sentiment": "positive",
+      "sentimentScore": 0.82,
+      "keywords": [
+        "italian",
+        "pasta",
+        "homemade",
+        "quality"
+      ],
+      "helpful": 6
+    },
+    {
+      "id": "rev-8",
+      "platform": "google",
+      "platformReviewId": "google-rev-006",
+      "author": "Michael Chen",
+      "authorAvatar": "MC",
+      "rating": 2,
+      "text": "Disappointed. The food took forever to arrive and was cold when it did. The waitress forgot our drinks twice.",
+      "date": "2026-01-19T20:45:00.000Z",
+      "responded": false,
+      "sentiment": "negative",
+      "sentimentScore": 0.25,
+      "keywords": [
+        "disappointed",
+        "slow",
+        "cold",
+        "forgot",
+        "drinks"
+      ],
+      "helpful": 3
+    },
+    {
+      "id": "rev-9",
+      "platform": "meta",
+      "platformReviewId": "ig-rev-001",
+      "author": "Sofia Rossi",
+      "authorAvatar": "SR",
+      "rating": 5,
+      "text": "Absolutely love this place! The gnocchi was divine and the wine selection is excellent. Can't wait to come back!",
+      "date": "2026-01-18T19:15:00.000Z",
+      "responded": true,
+      "response": "Grazie Sofia! We're so happy you enjoyed the gnocchi and our wine selection. See you soon! 🍷",
+      "responseDate": "2026-01-19T09:00:00.000Z",
+      "responseBy": "owner",
+      "sentiment": "positive",
+      "sentimentScore": 0.94,
+      "keywords": [
+        "love",
+        "gnocchi",
+        "divine",
+        "wine",
+        "excellent"
+      ],
+      "helpful": 11
+    },
+    {
+      "id": "rev-10",
+      "platform": "google",
+      "platformReviewId": "google-rev-007",
+      "author": "James Wilson",
+      "authorAvatar": "JW",
+      "rating": 4,
+      "text": "Solid Italian restaurant. The risotto was creamy and flavorful. Service could be faster but overall a good experience.",
+      "date": "2026-01-17T18:30:00.000Z",
+      "responded": false,
+      "sentiment": "positive",
+      "sentimentScore": 0.78,
+      "keywords": [
+        "solid",
+        "risotto",
+        "creamy",
+        "flavorful",
+        "service"
+      ],
+      "helpful": 4
+    }
+  ],
+  "analytics": {
+    "lastUpdated": "2026-02-02T00:30:00.000Z",
+    "overview": {
+      "totalReviews": 247,
+      "newReviewsLast30Days": 12,
+      "averageRating": 4.6,
+      "previousAverageRating": 4.5,
+      "responseRate": 92,
+      "previousResponseRate": 85,
+      "averageResponseTime": "4.2 hours"
+    },
+    "sentiment": {
+      "positive": 78,
+      "neutral": 18,
+      "negative": 4
+    },
+    "ratingDistribution": [
+      {
+        "stars": 5,
+        "count": 182,
+        "percentage": 73.7
+      },
+      {
+        "stars": 4,
+        "count": 45,
+        "percentage": 18.2
+      },
+      {
+        "stars": 3,
+        "count": 12,
+        "percentage": 4.9
+      },
+      {
+        "stars": 2,
+        "count": 5,
+        "percentage": 2
+      },
+      {
+        "stars": 1,
+        "count": 3,
+        "percentage": 1.2
+      }
+    ],
+    "platforms": [
+      {
+        "name": "Google",
+        "reviews": 198,
+        "rating": 4.6,
+        "responseRate": 95,
+        "newReviews": 10
+      },
+      {
+        "name": "Meta",
+        "reviews": 49,
+        "rating": 4.7,
+        "responseRate": 85,
+        "newReviews": 2
+      }
+    ],
+    "topKeywords": [
+      {
+        "keyword": "pizza",
+        "count": 45,
+        "sentiment": 0.92
+      },
+      {
+        "keyword": "pasta",
+        "count": 38,
+        "sentiment": 0.89
+      },
+      {
+        "keyword": "service",
+        "count": 32,
+        "sentiment": 0.75
+      },
+      {
+        "keyword": "atmosphere",
+        "count": 28,
+        "sentiment": 0.88
+      },
+      {
+        "keyword": "tiramisu",
+        "count": 24,
+        "sentiment": 0.95
+      }
+    ]
+  },
+  "users": [
+    {
+      "id": 1,
+      "email": "demo@restaurant.com",
+      "password": "$2a$10$demo123hashhere",
+      "name": "Demo Restaurant Owner",
+      "role": "owner",
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    }
+  ]
+}

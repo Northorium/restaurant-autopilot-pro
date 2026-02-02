@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Autopilot Pro - Dashboard</title>
+    
+    <!-- Material Design Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Material Design CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/@material/web@latest/bundle.css">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="logo">
+                    <span class="material-icons">restaurant</span>
+                    <h1>Restaurant Autopilot Pro</h1>
+                </div>
+                <p class="subtitle">Professional Restaurant Management Platform</p>
+                
+                <form id="login-form">
+                    <div class="input-field">
+                        <span class="material-icons">email</span>
+                        <input type="email" id="email" placeholder="Email" value="demo@restaurant.com" required>
+                    </div>
+                    <div class="input-field">
+                        <span class="material-icons">lock</span>
+                        <input type="password" id="password" placeholder="Password" value="demo123" required>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <span class="material-icons">login</span>
+                        Sign In
+                    </button>
+                </form>
+                
+                <div class="demo-note">
+                    <span class="material-icons">info</span>
+                    <p>Demo: demo@restaurant.com / demo123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard-screen" class="screen">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <span class="material-icons">restaurant</span>
+                <h2>Autopilot</h2>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="menu-item active" data-page="overview">
+                    <span class="material-icons">dashboard</span>
+                    <span>Overview</span>
+                </li>
+                <li class="menu-item" data-page="reviews">
+                    <span class="material-icons">rate_review</span>
+                    <span>Reviews</span>
+                    <span class="badge">2</span>
+                </li>
+                <li class="menu-item" data-page="analytics">
+                    <span class="material-icons">analytics</span>
+                    <span>Analytics</span>
+                </li>
+                <li class="menu-item" data-page="ai">
+                    <span class="material-icons">smart_toy</span>
+                    <span>AI Assistant</span>
+                </li>
+                <li class="menu-item" data-page="business">
+                    <span class="material-icons">store</span>
+                    <span>Business</span>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span class="material-icons">account_circle</span>
+                    <div>
+                        <p class="user-name">Demo Restaurant</p>
+                        <p class="user-email">demo@restaurant.com</p>
+                    </div>
+                </div>
+                <button id="logout-btn" class="btn-text">
+                    <span class="material-icons">logout</span>
+                    Logout
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1 id="page-title">Dashboard Overview</h1>
+                <div class="top-bar-actions">
+                    <button class="btn-icon" title="Notifications">
+                        <span class="material-icons">notifications</span>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="btn-icon" title="Settings">
+                        <span class="material-icons">settings</span>
+                    </button>
+                </div>
+            </header>
+
+            <div id="content-area">
+                <!-- Content loaded dynamically -->
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
