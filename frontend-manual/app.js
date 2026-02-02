@@ -88,6 +88,10 @@ document.querySelectorAll('.menu-item').forEach(item => {
 async function loadPage(page) {
     const titles = {
         'overview': 'Dashboard Overview',
+        'orders': 'Orders Management',
+        'reservations': 'Reservations',
+        'menu': 'Menu Management',
+        'customers': 'Customer Database',
         'reviews': 'Reviews Management',
         'analytics': 'Analytics & Insights',
         'ai': 'AI Assistant',
@@ -103,6 +107,18 @@ async function loadPage(page) {
         switch(page) {
             case 'overview':
                 await loadOverview();
+                break;
+            case 'orders':
+                await loadOrders();
+                break;
+            case 'reservations':
+                await loadReservations();
+                break;
+            case 'menu':
+                await loadMenu();
+                break;
+            case 'customers':
+                await loadCustomers();
                 break;
             case 'reviews':
                 await loadReviews();
@@ -124,9 +140,12 @@ async function loadPage(page) {
 
 // Load Overview Page
 async function loadOverview() {
-    const [analytics, reviews] = await Promise.all([
+    const [analytics, reviews, sales, orders, reservations] = await Promise.all([
         apiGet('/analytics/overview'),
-        apiGet('/reviews')
+        apiGet('/reviews'),
+        apiGet('/orders/stats/sales'),
+        apiGet('/orders?status=in-progress'),
+        apiGet('/reservations?status=pending')
     ]);
     
     const content = document.getElementById('content-area');
@@ -134,21 +153,49 @@ async function loadOverview() {
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon purple">
-                        <span class="material-icons">rate_review</span>
+                    <div class="stat-icon green">
+                        <span class="material-icons">attach_money</span>
                     </div>
                 </div>
-                <div class="stat-value">${analytics.reviews.total}</div>
-                <div class="stat-label">Total Reviews</div>
+                <div class="stat-value">kr ${sales.today.revenue}</div>
+                <div class="stat-label">Today's Revenue</div>
                 <div class="stat-trend positive">
                     <span class="material-icons">trending_up</span>
-                    ${analytics.reviews.trend}
+                    ${sales.today.orders} orders
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon purple">
+                        <span class="material-icons">receipt</span>
+                    </div>
+                </div>
+                <div class="stat-value">${orders.length}</div>
+                <div class="stat-label">Active Orders</div>
+                <div class="stat-trend ${orders.length > 0 ? 'positive' : ''}">
+                    <span class="material-icons">${orders.length > 0 ? 'schedule' : 'check_circle'}</span>
+                    ${orders.length > 0 ? 'In Progress' : 'All Done'}
                 </div>
             </div>
             
             <div class="stat-card">
                 <div class="stat-header">
                     <div class="stat-icon teal">
+                        <span class="material-icons">event</span>
+                    </div>
+                </div>
+                <div class="stat-value">${reservations.length}</div>
+                <div class="stat-label">Pending Reservations</div>
+                <div class="stat-trend ${reservations.length > 0 ? 'positive' : ''}">
+                    <span class="material-icons">pending</span>
+                    Needs Confirmation
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon orange">
                         <span class="material-icons">star</span>
                     </div>
                 </div>
@@ -159,39 +206,34 @@ async function loadOverview() {
                     ${analytics.rating.trend}
                 </div>
             </div>
-            
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon green">
-                        <span class="material-icons">check_circle</span>
-                    </div>
-                </div>
-                <div class="stat-value">${analytics.responses.rate}%</div>
-                <div class="stat-label">Response Rate</div>
-                <div class="stat-trend positive">
-                    <span class="material-icons">trending_up</span>
-                    ${analytics.responses.trend}
-                </div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon orange">
-                        <span class="material-icons">sentiment_satisfied</span>
-                    </div>
-                </div>
-                <div class="stat-value">${analytics.sentiment.positive}%</div>
-                <div class="stat-label">Positive Sentiment</div>
-                <div class="stat-trend positive">
-                    <span class="material-icons">trending_up</span>
-                    Excellent
-                </div>
-            </div>
         </div>
         
-        <div class="content-card">
-            <h2>Recent Reviews</h2>
-            ${reviews.reviews.slice(0, 3).map(review => renderReview(review)).join('')}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+            <div class="content-card">
+                <h2>Today's Top Sellers</h2>
+                ${sales.topItems.slice(0, 3).map((item, index) => `
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: var(--bg-tertiary); border-radius: 8px; margin-top: ${index > 0 ? '0.5rem' : '1rem'};">
+                        <span style="font-size: 1.5rem; font-weight: 300; color: var(--accent-primary);">#${index + 1}</span>
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 0.9375rem;">${item.name}</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.875rem;">${item.quantitySold} sold • kr ${item.revenue}</p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div class="content-card">
+                <h2>Recent Reviews</h2>
+                ${reviews.reviews.slice(0, 2).map(review => `
+                    <div style="padding: 0.75rem; background: var(--bg-tertiary); border-radius: 8px; margin-top: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <strong>${review.author}</strong>
+                            <span style="color: var(--warning);">${'★'.repeat(review.rating)}</span>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem;">${review.text.substring(0, 80)}...</p>
+                    </div>
+                `).join('')}
+            </div>
         </div>
     `;
 }
@@ -594,6 +636,284 @@ function renderReview(review) {
                     </button>
                 </div>
             `}
+        </div>
+    `;
+}
+
+// Load Orders Page
+async function loadOrders() {
+    const orders = await apiGet('/orders');
+    const sales = await apiGet('/orders/stats/sales');
+    
+    const content = document.getElementById('content-area');
+    document.getElementById('page-title').textContent = 'Orders Management';
+    
+    content.innerHTML = `
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <span class="material-icons">attach_money</span>
+                </div>
+                <div class="stat-value">kr ${sales.today.revenue}</div>
+                <div class="stat-label">Today's Revenue</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <span class="material-icons">receipt</span>
+                </div>
+                <div class="stat-value">${sales.today.orders}</div>
+                <div class="stat-label">Today's Orders</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon teal">
+                    <span class="material-icons">trending_up</span>
+                </div>
+                <div class="stat-value">kr ${sales.today.averageOrderValue}</div>
+                <div class="stat-label">Avg Order Value</div>
+            </div>
+        </div>
+        
+        <div class="content-card">
+            <h2>Recent Orders (${orders.length})</h2>
+            <div style="margin-top: 1rem;">
+                ${orders.map(order => `
+                    <div class="review-item">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <div>
+                                <h4>${order.orderNumber}</h4>
+                                <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                                    ${order.customerName} • Table ${order.tableNumber} • ${new Date(order.date).toLocaleString()}
+                                </p>
+                            </div>
+                            <span style="padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem; ${order.status === 'completed' ? 'background: rgba(76, 175, 80, 0.2); color: var(--success);' : order.status === 'in-progress' ? 'background: rgba(255, 193, 7, 0.2); color: var(--warning);' : 'background: var(--bg-tertiary); color: var(--text-secondary);'}">
+                                ${order.status}
+                            </span>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            ${order.items.map(item => `
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span>${item.quantity}x ${item.name}</span>
+                                    <span>kr ${item.price * item.quantity}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="border-top: 1px solid var(--border); padding-top: 1rem; display: flex; justify-content: space-between; font-weight: 500;">
+                            <span>Total:</span>
+                            <span style="font-size: 1.25rem; color: var(--accent-primary);">kr ${order.total}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+// Load Reservations Page
+async function loadReservations() {
+    const reservations = await apiGet('/reservations');
+    
+    const content = document.getElementById('content-area');
+    document.getElementById('page-title').textContent = 'Reservations';
+    
+    const upcoming = reservations.filter(r => new Date(r.date) > new Date() && r.status !== 'completed');
+    const today = reservations.filter(r => {
+        const resDate = new Date(r.date).toISOString().split('T')[0];
+        const todayDate = new Date().toISOString().split('T')[0];
+        return resDate === todayDate;
+    });
+    
+    content.innerHTML = `
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="stat-card">
+                <div class="stat-value">${reservations.length}</div>
+                <div class="stat-label">Total Reservations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${today.length}</div>
+                <div class="stat-label">Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${upcoming.length}</div>
+                <div class="stat-label">Upcoming</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${reservations.filter(r => r.status === 'confirmed').length}</div>
+                <div class="stat-label">Confirmed</div>
+            </div>
+        </div>
+        
+        <div class="content-card">
+            <h2>All Reservations</h2>
+            <div style="margin-top: 1rem;">
+                ${reservations.map(res => `
+                    <div class="review-item">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h4>${res.customerName}</h4>
+                                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                                    <span class="material-icons" style="font-size: 16px; vertical-align: middle;">event</span>
+                                    ${new Date(res.date).toLocaleString()} • ${res.guests} guests • Table ${res.tableNumber}
+                                </p>
+                                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                                    <span class="material-icons" style="font-size: 16px; vertical-align: middle;">phone</span>
+                                    ${res.customerPhone} • ${res.customerEmail}
+                                </p>
+                                ${res.specialRequests ? `<p style="margin-top: 0.5rem; color: var(--accent-primary); font-size: 0.875rem;">Note: ${res.specialRequests}</p>` : ''}
+                            </div>
+                            <span style="padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem; ${res.status === 'confirmed' ? 'background: rgba(76, 175, 80, 0.2); color: var(--success);' : res.status === 'pending' ? 'background: rgba(255, 193, 7, 0.2); color: var(--warning);' : 'background: var(--bg-tertiary); color: var(--text-secondary);'}">
+                                ${res.status}
+                            </span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+// Load Menu Page
+async function loadMenu() {
+    const categories = await apiGet('/menu/categories');
+    const items = await apiGet('/menu/items');
+    
+    const content = document.getElementById('content-area');
+    document.getElementById('page-title').textContent = 'Menu Management';
+    
+    content.innerHTML = `
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="stat-card">
+                <div class="stat-value">${categories.length}</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${items.length}</div>
+                <div class="stat-label">Menu Items</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${items.filter(i => i.available).length}</div>
+                <div class="stat-label">Available</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${items.filter(i => i.popular).length}</div>
+                <div class="stat-label">Popular Items</div>
+            </div>
+        </div>
+        
+        ${categories.map(cat => {
+            const catItems = items.filter(i => i.categoryId === cat.id);
+            return `
+                <div class="content-card">
+                    <h2>${cat.name} (${catItems.length})</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        ${catItems.map(item => `
+                            <div style="background: var(--bg-tertiary); border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
+                                ${item.image ? `<img src="${item.image}" style="width: 100%; height: 150px; object-fit: cover;">` : ''}
+                                <div style="padding: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                                        <h4 style="font-size: 1rem;">${item.name}</h4>
+                                        ${item.popular ? '<span style="background: var(--warning); color: var(--bg-primary); padding: 0.125rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">Popular</span>' : ''}
+                                    </div>
+                                    <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.75rem;">${item.description || ''}</p>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="font-size: 1.25rem; font-weight: 500; color: var(--accent-primary);">kr ${item.price}</span>
+                                        <span style="font-size: 0.75rem; color: var(--text-secondary);">${item.preparationTime} min</span>
+                                    </div>
+                                    ${item.allergens && item.allergens.length > 0 ? `
+                                        <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--warning);">
+                                            Contains: ${item.allergens.join(', ')}
+                                        </div>
+                                    ` : ''}
+                                    <div style="margin-top: 0.75rem;">
+                                        <span style="padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; ${item.available ? 'background: rgba(76, 175, 80, 0.2); color: var(--success);' : 'background: rgba(207, 102, 121, 0.2); color: var(--error);'}">
+                                            ${item.available ? 'Available' : 'Unavailable'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('')}
+    `;
+}
+
+// Load Customers Page
+async function loadCustomers() {
+    const customers = await apiGet('/customers?sortBy=spending');
+    
+    const content = document.getElementById('content-area');
+    document.getElementById('page-title').textContent = 'Customer Database';
+    
+    const vipCustomers = customers.filter(c => c.vip);
+    const totalSpent = customers.reduce((sum, c) => sum + c.totalSpent, 0);
+    const totalVisits = customers.reduce((sum, c) => sum + c.totalVisits, 0);
+    
+    content.innerHTML = `
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="stat-card">
+                <div class="stat-value">${customers.length}</div>
+                <div class="stat-label">Total Customers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${vipCustomers.length}</div>
+                <div class="stat-label">VIP Customers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">kr ${Math.round(totalSpent)}</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${totalVisits}</div>
+                <div class="stat-label">Total Visits</div>
+            </div>
+        </div>
+        
+        <div class="content-card">
+            <h2>Top Customers</h2>
+            <div style="margin-top: 1rem;">
+                ${customers.map(customer => `
+                    <div class="review-item">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <h4>${customer.name}</h4>
+                                    ${customer.vip ? '<span style="background: var(--warning); color: var(--bg-primary); padding: 0.125rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">VIP</span>' : ''}
+                                </div>
+                                <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                                    <span class="material-icons" style="font-size: 16px; vertical-align: middle;">email</span>
+                                    ${customer.email} • ${customer.phone}
+                                </p>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 0.75rem;">
+                                    <div>
+                                        <p style="color: var(--text-secondary); font-size: 0.75rem;">Total Spent</p>
+                                        <p style="font-size: 1.125rem; font-weight: 500; color: var(--accent-primary);">kr ${customer.totalSpent}</p>
+                                    </div>
+                                    <div>
+                                        <p style="color: var(--text-secondary); font-size: 0.75rem;">Visits</p>
+                                        <p style="font-size: 1.125rem; font-weight: 500;">${customer.totalVisits}</p>
+                                    </div>
+                                    <div>
+                                        <p style="color: var(--text-secondary); font-size: 0.75rem;">Avg Spending</p>
+                                        <p style="font-size: 1.125rem; font-weight: 500;">kr ${customer.averageSpending}</p>
+                                    </div>
+                                    <div>
+                                        <p style="color: var(--text-secondary); font-size: 0.75rem;">Last Visit</p>
+                                        <p style="font-size: 1.125rem; font-weight: 500;">${new Date(customer.lastVisit).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                                ${customer.favoriteItems && customer.favoriteItems.length > 0 ? `
+                                    <p style="margin-top: 0.75rem; color: var(--text-secondary); font-size: 0.875rem;">
+                                        <span class="material-icons" style="font-size: 16px; vertical-align: middle;">favorite</span>
+                                        Favorites: ${customer.favoriteItems.join(', ')}
+                                    </p>
+                                ` : ''}
+                                ${customer.notes ? `<p style="margin-top: 0.5rem; color: var(--accent-primary); font-size: 0.875rem;">Note: ${customer.notes}</p>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
         </div>
     `;
 }

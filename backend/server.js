@@ -31,12 +31,20 @@ const businessRoutes = require('./routes/business');
 const reviewsRoutes = require('./routes/reviews');
 const analyticsRoutes = require('./routes/analytics');
 const aiRoutes = require('./routes/ai');
+const menuRoutes = require('./routes/menu');
+const reservationsRoutes = require('./routes/reservations');
+const customersRoutes = require('./routes/customers');
+const ordersRoutes = require('./routes/orders');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/business', businessRoutes);
 app.use('/api/reviews', reviewsRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/menu', menuRoutes);
+app.use('/api/reservations', reservationsRoutes);
+app.use('/api/customers', customersRoutes);
+app.use('/api/orders', ordersRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

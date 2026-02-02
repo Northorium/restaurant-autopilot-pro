@@ -355,5 +355,415 @@
       "role": "owner",
       "createdAt": "2026-01-01T00:00:00.000Z"
     }
-  ]
+  ],
+  "menu": {
+    "categories": [
+      {
+        "id": "cat-1",
+        "name": "Appetizers",
+        "order": 1,
+        "active": true
+      },
+      {
+        "id": "cat-2",
+        "name": "Pizza",
+        "order": 2,
+        "active": true
+      },
+      {
+        "id": "cat-3",
+        "name": "Pasta",
+        "order": 3,
+        "active": true
+      },
+      {
+        "id": "cat-4",
+        "name": "Main Courses",
+        "order": 4,
+        "active": true
+      },
+      {
+        "id": "cat-5",
+        "name": "Desserts",
+        "order": 5,
+        "active": true
+      },
+      {
+        "id": "cat-6",
+        "name": "Beverages",
+        "order": 6,
+        "active": true
+      }
+    ],
+    "items": [
+      {
+        "id": "item-1",
+        "categoryId": "cat-1",
+        "name": "Bruschetta",
+        "description": "Grilled bread with tomatoes, garlic, and basil",
+        "price": 89,
+        "image": "https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=400",
+        "available": true,
+        "popular": true,
+        "allergens": ["gluten"],
+        "preparationTime": 10
+      },
+      {
+        "id": "item-2",
+        "categoryId": "cat-1",
+        "name": "Caprese Salad",
+        "description": "Fresh mozzarella, tomatoes, and basil with olive oil",
+        "price": 95,
+        "image": "https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=400",
+        "available": true,
+        "popular": false,
+        "allergens": ["dairy"],
+        "preparationTime": 5
+      },
+      {
+        "id": "item-3",
+        "categoryId": "cat-2",
+        "name": "Margherita Pizza",
+        "description": "Classic pizza with tomato, mozzarella, and basil",
+        "price": 145,
+        "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400",
+        "available": true,
+        "popular": true,
+        "allergens": ["gluten", "dairy"],
+        "preparationTime": 15
+      },
+      {
+        "id": "item-4",
+        "categoryId": "cat-2",
+        "name": "Quattro Formaggi",
+        "description": "Four cheese pizza: mozzarella, gorgonzola, parmesan, ricotta",
+        "price": 165,
+        "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400",
+        "available": true,
+        "popular": true,
+        "allergens": ["gluten", "dairy"],
+        "preparationTime": 15
+      },
+      {
+        "id": "item-5",
+        "categoryId": "cat-3",
+        "name": "Carbonara",
+        "description": "Spaghetti with eggs, pecorino cheese, and guanciale",
+        "price": 175,
+        "image": "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=400",
+        "available": true,
+        "popular": true,
+        "allergens": ["gluten", "dairy", "eggs"],
+        "preparationTime": 20
+      },
+      {
+        "id": "item-6",
+        "categoryId": "cat-3",
+        "name": "Lasagna",
+        "description": "Traditional layered pasta with meat sauce and béchamel",
+        "price": 185,
+        "image": "https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=400",
+        "available": true,
+        "popular": false,
+        "allergens": ["gluten", "dairy"],
+        "preparationTime": 25
+      },
+      {
+        "id": "item-7",
+        "categoryId": "cat-4",
+        "name": "Osso Buco",
+        "description": "Braised veal shanks with vegetables and wine",
+        "price": 295,
+        "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=400",
+        "available": true,
+        "popular": false,
+        "allergens": [],
+        "preparationTime": 30
+      },
+      {
+        "id": "item-8",
+        "categoryId": "cat-5",
+        "name": "Tiramisu",
+        "description": "Classic Italian dessert with coffee and mascarpone",
+        "price": 95,
+        "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400",
+        "available": true,
+        "popular": true,
+        "allergens": ["gluten", "dairy", "eggs"],
+        "preparationTime": 5
+      },
+      {
+        "id": "item-9",
+        "categoryId": "cat-5",
+        "name": "Panna Cotta",
+        "description": "Creamy vanilla dessert with berry sauce",
+        "price": 85,
+        "image": "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400",
+        "available": true,
+        "popular": false,
+        "allergens": ["dairy"],
+        "preparationTime": 5
+      },
+      {
+        "id": "item-10",
+        "categoryId": "cat-6",
+        "name": "House Wine",
+        "description": "Red or white house wine by the glass",
+        "price": 75,
+        "available": true,
+        "popular": false,
+        "allergens": [],
+        "preparationTime": 2
+      }
+    ]
+  },
+  "reservations": [
+    {
+      "id": "res-1",
+      "customerName": "John Anderson",
+      "customerEmail": "john@email.com",
+      "customerPhone": "+47 98 76 54 32",
+      "date": "2026-02-03T18:30:00.000Z",
+      "guests": 4,
+      "tableNumber": 5,
+      "status": "confirmed",
+      "specialRequests": "Window seat if possible",
+      "createdAt": "2026-01-28T10:00:00.000Z"
+    },
+    {
+      "id": "res-2",
+      "customerName": "Maria Lopez",
+      "customerEmail": "maria@email.com",
+      "customerPhone": "+47 91 23 45 67",
+      "date": "2026-02-03T19:00:00.000Z",
+      "guests": 2,
+      "tableNumber": 8,
+      "status": "confirmed",
+      "specialRequests": "Anniversary dinner",
+      "createdAt": "2026-01-30T14:30:00.000Z"
+    },
+    {
+      "id": "res-3",
+      "customerName": "Erik Johansen",
+      "customerEmail": "erik@email.com",
+      "customerPhone": "+47 90 11 22 33",
+      "date": "2026-02-03T20:00:00.000Z",
+      "guests": 6,
+      "tableNumber": 12,
+      "status": "pending",
+      "specialRequests": "Birthday celebration",
+      "createdAt": "2026-02-01T09:15:00.000Z"
+    },
+    {
+      "id": "res-4",
+      "customerName": "Sophie Chen",
+      "customerEmail": "sophie@email.com",
+      "customerPhone": "+47 92 33 44 55",
+      "date": "2026-02-04T18:00:00.000Z",
+      "guests": 3,
+      "tableNumber": 7,
+      "status": "confirmed",
+      "specialRequests": "",
+      "createdAt": "2026-02-01T16:45:00.000Z"
+    },
+    {
+      "id": "res-5",
+      "customerName": "Michael Brown",
+      "customerEmail": "michael@email.com",
+      "customerPhone": "+47 93 55 66 77",
+      "date": "2026-02-02T19:30:00.000Z",
+      "guests": 2,
+      "tableNumber": 3,
+      "status": "completed",
+      "specialRequests": "",
+      "createdAt": "2026-01-25T11:00:00.000Z"
+    }
+  ],
+  "customers": [
+    {
+      "id": "cust-1",
+      "name": "John Anderson",
+      "email": "john@email.com",
+      "phone": "+47 98 76 54 32",
+      "totalVisits": 12,
+      "totalSpent": 8450,
+      "averageSpending": 704,
+      "lastVisit": "2026-01-28T19:30:00.000Z",
+      "favoriteItems": ["Carbonara", "Tiramisu"],
+      "vip": true,
+      "notes": "Prefers table by window",
+      "createdAt": "2025-06-15T00:00:00.000Z"
+    },
+    {
+      "id": "cust-2",
+      "name": "Maria Lopez",
+      "email": "maria@email.com",
+      "phone": "+47 91 23 45 67",
+      "totalVisits": 8,
+      "totalSpent": 5200,
+      "averageSpending": 650,
+      "lastVisit": "2026-01-22T20:15:00.000Z",
+      "favoriteItems": ["Margherita Pizza", "House Wine"],
+      "vip": false,
+      "notes": "",
+      "createdAt": "2025-08-20T00:00:00.000Z"
+    },
+    {
+      "id": "cust-3",
+      "name": "Erik Johansen",
+      "email": "erik@email.com",
+      "phone": "+47 90 11 22 33",
+      "totalVisits": 5,
+      "totalSpent": 3850,
+      "averageSpending": 770,
+      "lastVisit": "2026-01-15T18:45:00.000Z",
+      "favoriteItems": ["Osso Buco", "Quattro Formaggi"],
+      "vip": false,
+      "notes": "Allergic to shellfish",
+      "createdAt": "2025-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "cust-4",
+      "name": "Sophie Chen",
+      "email": "sophie@email.com",
+      "phone": "+47 92 33 44 55",
+      "totalVisits": 15,
+      "totalSpent": 12300,
+      "averageSpending": 820,
+      "lastVisit": "2026-01-30T19:00:00.000Z",
+      "favoriteItems": ["Lasagna", "Panna Cotta", "House Wine"],
+      "vip": true,
+      "notes": "Regular customer, always tips well",
+      "createdAt": "2025-04-12T00:00:00.000Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "order-1",
+      "orderNumber": "ORD-20260202-001",
+      "customerId": "cust-1",
+      "customerName": "John Anderson",
+      "date": "2026-02-02T18:30:00.000Z",
+      "items": [
+        {
+          "itemId": "item-5",
+          "name": "Carbonara",
+          "quantity": 2,
+          "price": 175
+        },
+        {
+          "itemId": "item-8",
+          "name": "Tiramisu",
+          "quantity": 2,
+          "price": 95
+        },
+        {
+          "itemId": "item-10",
+          "name": "House Wine",
+          "quantity": 2,
+          "price": 75
+        }
+      ],
+      "subtotal": 690,
+      "tax": 173,
+      "total": 863,
+      "status": "completed",
+      "paymentMethod": "card",
+      "tableNumber": 5,
+      "serverName": "Anna"
+    },
+    {
+      "id": "order-2",
+      "orderNumber": "ORD-20260202-002",
+      "customerId": "cust-2",
+      "customerName": "Maria Lopez",
+      "date": "2026-02-02T19:15:00.000Z",
+      "items": [
+        {
+          "itemId": "item-3",
+          "name": "Margherita Pizza",
+          "quantity": 1,
+          "price": 145
+        },
+        {
+          "itemId": "item-1",
+          "name": "Bruschetta",
+          "quantity": 1,
+          "price": 89
+        }
+      ],
+      "subtotal": 234,
+      "tax": 59,
+      "total": 293,
+      "status": "completed",
+      "paymentMethod": "cash",
+      "tableNumber": 8,
+      "serverName": "Marco"
+    },
+    {
+      "id": "order-3",
+      "orderNumber": "ORD-20260202-003",
+      "customerId": null,
+      "customerName": "Walk-in Customer",
+      "date": "2026-02-02T20:00:00.000Z",
+      "items": [
+        {
+          "itemId": "item-4",
+          "name": "Quattro Formaggi",
+          "quantity": 1,
+          "price": 165
+        },
+        {
+          "itemId": "item-10",
+          "name": "House Wine",
+          "quantity": 1,
+          "price": 75
+        }
+      ],
+      "subtotal": 240,
+      "tax": 60,
+      "total": 300,
+      "status": "in-progress",
+      "paymentMethod": "pending",
+      "tableNumber": 3,
+      "serverName": "Sofia"
+    }
+  ],
+  "sales": {
+    "today": {
+      "revenue": 2456,
+      "orders": 8,
+      "averageOrderValue": 307
+    },
+    "thisWeek": {
+      "revenue": 18750,
+      "orders": 62,
+      "averageOrderValue": 302
+    },
+    "thisMonth": {
+      "revenue": 89340,
+      "orders": 287,
+      "averageOrderValue": 311
+    },
+    "topItems": [
+      {
+        "itemId": "item-5",
+        "name": "Carbonara",
+        "quantitySold": 45,
+        "revenue": 7875
+      },
+      {
+        "itemId": "item-3",
+        "name": "Margherita Pizza",
+        "quantitySold": 38,
+        "revenue": 5510
+      },
+      {
+        "itemId": "item-8",
+        "name": "Tiramisu",
+        "quantitySold": 32,
+        "revenue": 3040
+      }
+    ]
+  }
 }
