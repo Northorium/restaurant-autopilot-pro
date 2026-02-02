@@ -1,0 +1,665 @@
+# Restaurant Autopilot Pro - Cursor Rules
+
+## Project Overview
+Restaurant Autopilot Pro is an all-in-one AI-powered restaurant management platform built with:
+- **Backend:** NestJS (Node.js + TypeScript)
+- **Database:** PostgreSQL + Prisma ORM + Redis
+- **Frontend:** React + TypeScript + Vite
+- **Architecture:** Modular monorepo (independent modules)
+
+## Code Style & Standards
+
+### TypeScript
+- **Always use TypeScript** (never plain JavaScript)
+- **Strict mode enabled** - no `any` types (use `unknown` if needed)
+- **Explicit return types** on all functions
+- **Interface over type** for object shapes
+- **Use enums** for constants with multiple values
+
+```typescript
+// ✅ Good
+interface CreateOrderDto {
+  restaurantId: string;
+  items: OrderItemDto[];
+  customerInfo: CustomerInfo;
+}
+
+async function createOrder(data: CreateOrderDto): Promise<Order> {
+  // implementation
+}
+
+// ❌ Bad
+function createOrder(data: any) {
+  // implementation
+}
+```
+
+### Naming Conventions
+- **Files:** kebab-case (`order.service.ts`, `create-order.dto.ts`)
+- **Classes:** PascalCase (`OrderService`, `CreateOrderDto`)
+- **Functions/variables:** camelCase (`createOrder`, `orderId`)
+- **Constants:** UPPER_SNAKE_CASE (`API_BASE_URL`, `MAX_RETRIES`)
+- **Interfaces:** PascalCase with no prefix (`Order`, not `IOrder`)
+- **Enums:** PascalCase for name, UPPER_SNAKE_CASE for values
+
+```typescript
+// ✅ Good
+enum OrderStatus {
+  NEW = 'NEW',
+  ACCEPTED = 'ACCEPTED',
+  PREPARING = 'PREPARING',
+  READY = 'READY',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED'
+}
+
+// ❌ Bad
+enum orderStatus {
+  new = 'new',
+  accepted = 'accepted'
+}
+```
+
+### Project Structure
+
+```
+apps/api/src/
+├── modules/
+│   ├── orders/
+│   │   ├── orders.module.ts        # NestJS module
+│   │   ├── orders.controller.ts    # REST API endpoints
+│   │   ├── orders.service.ts       # Business logic
+│   │   ├── dto/                    # Data Transfer Objects
+│   │   │   ├── create-order.dto.ts
+│   │   │   └── update-order.dto.ts
+│   │   ├── entities/               # Prisma entities (auto-generated)
+│   │   └── tests/                  # Unit tests
+│   │       └── orders.service.spec.ts
+│   └── ...
+├── shared/
+│   ├── database/                   # Prisma client
+│   ├── events/                     # Event emitter
+│   ├── logger/                     # Logging utility
+│   ├── auth/                       # JWT auth guards
+│   └── utils/                      # Helper functions
+└── main.ts                         # Application entry point
+```
+
+## NestJS Module Template
+
+When creating a new module, follow this structure:
+
+```typescript
+// orders.module.ts
+import { Module } from '@nestjs/common';
+import { OrdersController } from './orders.controller';
+import { OrdersService } from './orders.service';
+
+@Module({
+  controllers: [OrdersController],
+  providers: [OrdersService],
+  exports: [OrdersService], // Export if other modules need it
+})
+export class OrdersModule {}
+```
+
+```typescript
+// orders.controller.ts
+import { Controller, Get, Post, Body, Param, Patch } from '@nestjs/common';
+import { OrdersService } from './orders.service';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { Order } from '@prisma/client';
+
+@Controller('api/orders')
+export class OrdersController {
+  constructor(private readonly ordersService: OrdersService) {}
+
+  @Get()
+  async findAll(): Promise<Order[]> {
+    return this.ordersService.findAll();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<Order> {
+    return this.ordersService.findOne(id);
+  }
+
+  @Post()
+  async create(@Body() createOrderDto: CreateOrderDto): Promise<Order> {
+    return this.ordersService.create(createOrderDto);
+  }
+}
+```
+
+```typescript
+// orders.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '@shared/database/prisma.service';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { Order } from '@prisma/client';
+
+@Injectable()
+export class OrdersService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findAll(): Promise<Order[]> {
+    return this.prisma.order.findMany({
+      include: { items: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async findOne(id: string): Promise<Order> {
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: { items: true },
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${id} not found`);
+    }
+
+    return order;
+  }
+
+  async create(data: CreateOrderDto): Promise<Order> {
+    return this.prisma.order.create({
+      data: {
+        ...data,
+        status: 'NEW',
+        createdAt: new Date(),
+      },
+      include: { items: true },
+    });
+  }
+}
+```
+
+## Prisma Schema Conventions
+
+```prisma
+// Always use these conventions:
+model Order {
+  id              String   @id @default(uuid())  // UUID primary key
+  restaurantId    String                         // Foreign key (manual)
+  
+  // Group related fields
+  // Customer info
+  customerName    String?
+  customerPhone   String?
+  
+  // Order details
+  totalAmount     Float
+  status          String
+  
+  // Relations
+  items           OrderItem[]
+  
+  // Timestamps (always include)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Indexes (for performance)
+  @@index([restaurantId, status])
+  @@index([createdAt])
+}
+```
+
+## Error Handling
+
+Always use NestJS built-in exceptions:
+
+```typescript
+import {
+  NotFoundException,
+  BadRequestException,
+  UnauthorizedException,
+  ForbiddenException,
+  ConflictException,
+  InternalServerErrorException,
+} from '@nestjs/common';
+
+// ✅ Good
+if (!order) {
+  throw new NotFoundException(`Order with ID ${id} not found`);
+}
+
+if (order.status === 'COMPLETED') {
+  throw new BadRequestException('Cannot modify completed order');
+}
+
+// ❌ Bad
+if (!order) {
+  throw new Error('Order not found');
+}
+```
+
+## Validation (DTOs)
+
+Use `class-validator` for all DTOs:
+
+```typescript
+import { IsString, IsNotEmpty, IsNumber, Min, IsEnum, IsOptional } from 'class-validator';
+
+export class CreateOrderDto {
+  @IsString()
+  @IsNotEmpty()
+  restaurantId: string;
+
+  @IsNumber()
+  @Min(0)
+  totalAmount: number;
+
+  @IsEnum(['delivery', 'pickup', 'dinein'])
+  orderType: string;
+
+  @IsString()
+  @IsOptional()
+  notes?: string;
+}
+```
+
+## Database Queries
+
+### Best Practices
+- **Always use Prisma client** (no raw SQL unless absolutely necessary)
+- **Use transactions** for multi-step operations
+- **Add indexes** for frequently queried fields
+- **Use select** to only fetch needed fields (performance)
+- **Use include** for relations (avoid N+1 queries)
+
+```typescript
+// ✅ Good - Single query with relations
+const order = await this.prisma.order.findUnique({
+  where: { id },
+  include: { items: true },
+});
+
+// ❌ Bad - N+1 query problem
+const order = await this.prisma.order.findUnique({ where: { id } });
+const items = await this.prisma.orderItem.findMany({ where: { orderId: id } });
+```
+
+### Transactions Example
+
+```typescript
+async createOrderWithItems(data: CreateOrderDto): Promise<Order> {
+  return this.prisma.$transaction(async (tx) => {
+    const order = await tx.order.create({
+      data: {
+        restaurantId: data.restaurantId,
+        totalAmount: data.totalAmount,
+        status: 'NEW',
+      },
+    });
+
+    await tx.orderItem.createMany({
+      data: data.items.map(item => ({
+        orderId: order.id,
+        ...item,
+      })),
+    });
+
+    return tx.order.findUnique({
+      where: { id: order.id },
+      include: { items: true },
+    });
+  });
+}
+```
+
+## Event-Driven Architecture
+
+Use events to decouple modules:
+
+```typescript
+// In OrdersService
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
+@Injectable()
+export class OrdersService {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
+
+  async completeOrder(id: string): Promise<Order> {
+    const order = await this.prisma.order.update({
+      where: { id },
+      data: { status: 'COMPLETED', completedAt: new Date() },
+    });
+
+    // Emit event (other modules can listen)
+    this.eventEmitter.emit('order.completed', order);
+
+    return order;
+  }
+}
+
+// In InventoryModule (listens to events)
+import { OnEvent } from '@nestjs/event-emitter';
+
+@Injectable()
+export class InventoryService {
+  @OnEvent('order.completed')
+  async handleOrderCompleted(order: Order): Promise<void> {
+    // Deduct inventory when order is completed
+    await this.deductStock(order);
+  }
+}
+```
+
+## API Response Format
+
+Consistent response format for all endpoints:
+
+```typescript
+// Success response
+{
+  "success": true,
+  "data": { /* response data */ }
+}
+
+// Error response
+{
+  "success": false,
+  "error": {
+    "statusCode": 404,
+    "message": "Order not found",
+    "timestamp": "2026-02-02T12:00:00Z",
+    "path": "/api/orders/123"
+  }
+}
+```
+
+Implement with NestJS exception filters:
+
+```typescript
+// shared/filters/http-exception.filter.ts
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+
+@Catch(HttpException)
+export class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
+    const status = exception.getStatus();
+
+    response.status(status).json({
+      success: false,
+      error: {
+        statusCode: status,
+        message: exception.message,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+      },
+    });
+  }
+}
+```
+
+## Testing
+
+Write tests for all services:
+
+```typescript
+// orders.service.spec.ts
+import { Test, TestingModule } from '@nestjs/testing';
+import { OrdersService } from './orders.service';
+import { PrismaService } from '@shared/database/prisma.service';
+
+describe('OrdersService', () => {
+  let service: OrdersService;
+  let prisma: PrismaService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        OrdersService,
+        {
+          provide: PrismaService,
+          useValue: {
+            order: {
+              findMany: jest.fn(),
+              findUnique: jest.fn(),
+              create: jest.fn(),
+            },
+          },
+        },
+      ],
+    }).compile();
+
+    service = module.get<OrdersService>(OrdersService);
+    prisma = module.get<PrismaService>(PrismaService);
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+
+  describe('findOne', () => {
+    it('should return an order', async () => {
+      const mockOrder = { id: '1', restaurantId: 'r1', status: 'NEW' };
+      jest.spyOn(prisma.order, 'findUnique').mockResolvedValue(mockOrder);
+
+      const result = await service.findOne('1');
+      expect(result).toEqual(mockOrder);
+    });
+
+    it('should throw NotFoundException if order not found', async () => {
+      jest.spyOn(prisma.order, 'findUnique').mockResolvedValue(null);
+
+      await expect(service.findOne('999')).rejects.toThrow(NotFoundException);
+    });
+  });
+});
+```
+
+## Logging
+
+Use NestJS Logger:
+
+```typescript
+import { Logger } from '@nestjs/common';
+
+@Injectable()
+export class OrdersService {
+  private readonly logger = new Logger(OrdersService.name);
+
+  async createOrder(data: CreateOrderDto): Promise<Order> {
+    this.logger.log(`Creating order for restaurant ${data.restaurantId}`);
+
+    try {
+      const order = await this.prisma.order.create({ data });
+      this.logger.log(`Order created: ${order.id}`);
+      return order;
+    } catch (error) {
+      this.logger.error(`Failed to create order: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+}
+```
+
+## Environment Variables
+
+Use `.env` files with validation:
+
+```typescript
+// shared/config/env.validation.ts
+import { plainToClass } from 'class-transformer';
+import { IsString, IsNumber, validateSync } from 'class-validator';
+
+class EnvironmentVariables {
+  @IsString()
+  DATABASE_URL: string;
+
+  @IsString()
+  JWT_SECRET: string;
+
+  @IsNumber()
+  PORT: number;
+
+  @IsString()
+  WOLT_API_KEY: string;
+
+  @IsString()
+  OPENAI_API_KEY: string;
+}
+
+export function validate(config: Record<string, unknown>) {
+  const validatedConfig = plainToClass(EnvironmentVariables, config, {
+    enableImplicitConversion: true,
+  });
+
+  const errors = validateSync(validatedConfig, {
+    skipMissingProperties: false,
+  });
+
+  if (errors.length > 0) {
+    throw new Error(errors.toString());
+  }
+
+  return validatedConfig;
+}
+```
+
+## Security Best Practices
+
+1. **Never commit secrets** (use .env, never hardcode)
+2. **Always validate input** (class-validator on all DTOs)
+3. **Use JWT for auth** (never sessions in API)
+4. **Rate limit APIs** (prevent abuse)
+5. **Encrypt sensitive data** (API keys, passwords)
+6. **Use HTTPS only** (in production)
+
+```typescript
+// Example: Rate limiting
+import { ThrottlerGuard } from '@nestjs/throttler';
+import { UseGuards } from '@nestjs/common';
+
+@Controller('api/orders')
+@UseGuards(ThrottlerGuard) // Max 100 requests per minute
+export class OrdersController {
+  // ...
+}
+```
+
+## Performance Optimization
+
+1. **Use indexes** on frequently queried fields
+2. **Eager load relations** (include) to avoid N+1
+3. **Use Redis** for caching (hot data)
+4. **Paginate large results** (never return 1000+ records)
+5. **Use select** to only fetch needed fields
+
+```typescript
+// ✅ Good - Paginated with caching
+async findAll(page: number = 1, limit: number = 50): Promise<Order[]> {
+  const cacheKey = `orders:page:${page}`;
+  
+  // Check cache first
+  const cached = await this.redis.get(cacheKey);
+  if (cached) return JSON.parse(cached);
+
+  // Query database
+  const orders = await this.prisma.order.findMany({
+    skip: (page - 1) * limit,
+    take: limit,
+    select: {
+      id: true,
+      totalAmount: true,
+      status: true,
+      createdAt: true,
+      // Don't fetch heavy fields
+    },
+  });
+
+  // Cache for 5 minutes
+  await this.redis.setex(cacheKey, 300, JSON.stringify(orders));
+
+  return orders;
+}
+```
+
+## Code Review Checklist
+
+Before committing, ensure:
+- [ ] All types are explicit (no `any`)
+- [ ] DTOs have validation decorators
+- [ ] Errors use NestJS exceptions
+- [ ] Database queries use Prisma
+- [ ] Sensitive data not hardcoded
+- [ ] Tests written for new services
+- [ ] Logging added for important operations
+- [ ] Code follows naming conventions
+- [ ] No console.log (use Logger)
+- [ ] Comments added for complex logic
+
+## Git Commit Messages
+
+Follow conventional commits:
+
+```
+feat(orders): add order cancellation endpoint
+fix(menu): resolve sync issue with Wolt API
+refactor(analytics): optimize daily metrics calculation
+docs(readme): update installation instructions
+test(orders): add tests for order service
+```
+
+## Documentation
+
+Document all public APIs with JSDoc:
+
+```typescript
+/**
+ * Creates a new order from online ordering.
+ * 
+ * @param data - Order creation data including items and customer info
+ * @returns The created order with generated ID
+ * @throws {BadRequestException} If menu items are invalid
+ * @throws {ConflictException} If restaurant is closed
+ */
+async createOrder(data: CreateOrderDto): Promise<Order> {
+  // implementation
+}
+```
+
+---
+
+## When Building a New Module
+
+1. **Create module structure:**
+   ```
+   modules/new-feature/
+   ├── new-feature.module.ts
+   ├── new-feature.controller.ts
+   ├── new-feature.service.ts
+   ├── dto/
+   └── tests/
+   ```
+
+2. **Define Prisma schema** (in `prisma/schema.prisma`)
+3. **Generate Prisma client:** `npx prisma generate`
+4. **Migrate database:** `npx prisma migrate dev`
+5. **Write service logic**
+6. **Write controller endpoints**
+7. **Add validation to DTOs**
+8. **Write tests**
+9. **Register module** in `app.module.ts`
+
+---
+
+## Remember
+
+- **Quality over speed** - Write it right the first time
+- **Test everything** - Bugs in production are expensive
+- **Document as you go** - Future you will thank you
+- **Ask for help** - Better to clarify than assume
+- **Keep it simple** - Don't over-engineer
+
+---
+
+**Now you're ready to build Restaurant Autopilot Pro! 🚀**
